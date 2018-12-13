@@ -1,0 +1,34 @@
+{
+  "name": "OpenSeadragonCanvasOverlayHd",
+  "version": "1.0.0",
+  "description": "An OpenSeadragon plugin that adds canvas overlay capability.",
+  "author": "Joshua Gould",
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "install": "rollup -c"
+  },
+  "main": "dist/openseadragon-canvas-overlay-hd.min.js",
+  "devDependencies": {
+    "rollup": "0.64",
+    "rollup-plugin-ascii": "0.0",
+    "rollup-plugin-terser": "1"
+  },
+  "peerDependencies": {
+    "openseadragon": "^2.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshua-gould/OpenSeadragonCanvasOverlayHd.git"
+  },
+  "files": [],
+  "keywords": [
+    "openseadragon",
+    "plugin",
+    "canvas",
+    "overlay"
+  ],
+  "bugs": {
+    "url": "https://github.com/joshua-gould/OpenSeadragonCanvasOverlayHd/issues"
+  },
+  "homepage": "https://github.com/joshua-gould/OpenSeadragonCanvasOverlayHd"
+}
