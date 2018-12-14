@@ -1,6 +1,6 @@
 # OpenSeadragonCanvasOverlayHd
 
-An [OpenSeadragon](http://openseadragon.github.io) plugin that adds canvas overlay capability.
+An [OpenSeadragon](http://openseadragon.github.io) plugin that adds canvas overlay capability and supports multi-images.
 
 Compatible with OpenSeadragon 2.2.0 or greater.
 
@@ -42,4 +42,4 @@ const overlay = OpenSeadragon.CanvasOverlayHd(viewer, {
 });
  ```  
 
-
+[Demo](http://joshua-gould.github.io/OpenSeadragonCanvasOverlayHd/demo/)

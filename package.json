@@ -1,7 +1,7 @@
 {
   "name": "OpenSeadragonCanvasOverlayHd",
   "version": "1.0.0",
-  "description": "An OpenSeadragon plugin that adds canvas overlay capability.",
+  "description": "An OpenSeadragon plugin that adds canvas overlay capability and support multi-images.",
   "author": "Joshua Gould",
   "license": "BSD-3-Clause",
   "scripts": {
@@ -20,7 +20,6 @@
     "type": "git",
     "url": "git+https://github.com/joshua-gould/OpenSeadragonCanvasOverlayHd.git"
   },
-  "files": [],
   "keywords": [
     "openseadragon",
     "plugin",

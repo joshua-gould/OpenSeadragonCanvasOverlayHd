@@ -7,13 +7,10 @@ typeof define === 'function' && define.amd ? define(factory) :
 
 class CanvasOverlayHd {
   constructor (viewer, options) {
-    let _this = this;
     this._viewer = viewer;
     this.backingScale = 1;
-
     this._containerWidth = 0;
     this._containerHeight = 0;
-
     this._canvasdiv = document.createElement('div');
     this._canvasdiv.style.position = 'absolute';
     this._canvasdiv.style.left = 0;
@@ -21,22 +18,19 @@ class CanvasOverlayHd {
     this._canvasdiv.style.width = '100%';
     this._canvasdiv.style.height = '100%';
     this._viewer.canvas.appendChild(this._canvasdiv);
-
     this._canvas = document.createElement('canvas');
     this._canvasdiv.appendChild(this._canvas);
-
     this.onRedraw = options.onRedraw || function () {};
     this.clearBeforeRedraw = (typeof (options.clearBeforeRedraw) !== 'undefined') ?
       options.clearBeforeRedraw : true;
 
-    this._viewer.addHandler('update-viewport', function () {
-      _this.resize();
-      _this._updateCanvas();
+    this._viewer.addHandler('update-viewport', () => {
+      this.resize();
+      this._updateCanvas();
     });
-
-    this._viewer.addHandler('open', function () {
-      _this.resize();
-      _this._updateCanvas();
+    this._viewer.addHandler('open', () => {
+      this.resize();
+      this._updateCanvas();
     });
   }
 
@@ -75,36 +69,26 @@ class CanvasOverlayHd {
       this._canvas.setAttribute('height', backingScale * this._containerHeight);
       this._canvas.style.height = this._containerHeight + 'px';
     }
-    this._viewportOrigin = { x: 0, y: 0 };
-    let boundsRect = this._viewer.viewport.getBounds(true);
-    this._viewportOrigin.x = boundsRect.x;
-    this._viewportOrigin.y = boundsRect.y * this.imgAspectRatio;
-
-    this._viewportWidth = boundsRect.width;
-    this._viewportHeight = boundsRect.height * this.imgAspectRatio;
-    let image1 = this._viewer.world.getItemAt(0);
-    this.imgWidth = image1.source.dimensions.x;
-    this.imgHeight = image1.source.dimensions.y;
-    this.imgAspectRatio = this.imgWidth / this.imgHeight;
   }
 
   _updateCanvas () {
     let viewportZoom = this._viewer.viewport.getZoom(true);
-    let image1 = this._viewer.world.getItemAt(0);
-    if (image1) {
-      let zoom = image1.viewportToImageZoom(viewportZoom);
-      let x = ((this._viewportOrigin.x / this.imgWidth - this._viewportOrigin.x) / this._viewportWidth) *
-        (this.backingScale * this._containerWidth);
-      let y = ((this._viewportOrigin.y / this.imgHeight - this._viewportOrigin.y) / this._viewportHeight) *
-        (this.backingScale * this._containerHeight);
-
-      if (this.clearBeforeRedraw) this.clear();
-      let context = this._canvas.getContext('2d');
-      context.translate(x, y);
-      context.scale(zoom, zoom);
-      context.scale(this.backingScale, this.backingScale);
-      this.onRedraw({ context: context, x: x, y: y, zoom: zoom });
-      context.setTransform(1, 0, 0, 1, 0, 0);
+    if (this.clearBeforeRedraw) {
+      this.clear();
+    }
+    let context = this._canvas.getContext('2d');
+    for (let i = 0, count = this._viewer.world.getItemCount(); i < count; i++) {
+      let image = this._viewer.world.getItemAt(i);
+      if (image) {
+        let zoom = image.viewportToImageZoom(viewportZoom);
+        var vp = image.imageToViewportCoordinates(0, 0, true);
+        var p = this._viewer.viewport.pixelFromPoint(vp, true);
+        context.scale(this.backingScale, this.backingScale);
+        context.translate(p.x, p.y);
+        context.scale(zoom, zoom);
+        this.onRedraw({ index: i, context: context, x: p.x, y: p.y, zoom: zoom });
+        context.setTransform(1, 0, 0, 1, 0, 0);
+      }
     }
   }
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Overlay Demo</title>
+</head>
+<body>
+<div id="openseadragon" style="width:100%;height:600px;"></div>
+<script src="https://cdn.jsdelivr.net/npm/openseadragon@2.4/build/openseadragon/openseadragon.min.js"></script>
+<script src="../dist/openseadragon-canvas-overlay-hd.js"></script>
+<script>
+
+  var tileSource = {
+    Image: {
+      xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+      Url: 'http://openseadragon.github.io/example-images/highsmith/highsmith_files/',
+      Format: 'jpg',
+      Overlap: '2',
+      TileSize: '256',
+      Size: {
+        Height: '9221',
+        Width: '7026',
+      },
+    },
+  };
+
+  var viewer = new OpenSeadragon({
+    id: 'openseadragon',
+    prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@2.4/build/openseadragon/images/',
+    autoResize: false,
+    showFullPageControl: false,
+    collectionMode: true,
+    collectionRows: 2,
+    tileSources: [
+      { tileSource: tileSource },
+      { tileSource: tileSource },
+      { tileSource: tileSource },
+      { tileSource: tileSource }],
+  });
+  var colors = ['red', 'blue', 'orange', 'white'];
+  var overlay = new OpenSeadragon.CanvasOverlayHd(viewer, {
+    onRedraw: function (opts) {
+      var context = opts.context;
+      context.fillStyle = colors[opts.index];
+      context.beginPath();
+      context.arc(150, 150, 100, 0, Math.PI * 2, true);
+      context.fill();
+      context.stroke();
+    },
+  });
+
+
+</script>
+
+
+</body>
+</html>
