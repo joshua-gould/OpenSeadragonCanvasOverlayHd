@@ -42,4 +42,4 @@ const overlay = OpenSeadragon.CanvasOverlayHd(viewer, {
 });
  ```  
 
-[Demo](http://joshua-gould.github.io/OpenSeadragonCanvasOverlayHd/demo/)
+[Demo](https://joshua-gould.github.io/OpenSeadragonCanvasOverlayHd/demo/index.html)
