@@ -38,15 +38,15 @@
       { tileSource: tileSource },
       { tileSource: tileSource }],
   });
-  var colors = ['red', 'blue', 'orange', 'white'];
+
+  var colors = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c'];
   var overlay = new OpenSeadragon.CanvasOverlayHd(viewer, {
     onRedraw: function (opts) {
       var context = opts.context;
       context.fillStyle = colors[opts.index];
       context.beginPath();
-      context.arc(150, 150, 100, 0, Math.PI * 2, true);
+      context.arc(150, 150, 150, 0, Math.PI * 2, true);
       context.fill();
-      context.stroke();
     },
   });
 

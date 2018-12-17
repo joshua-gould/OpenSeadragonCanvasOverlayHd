@@ -14,31 +14,39 @@ Configuration options are:
 For example:
 
 ```javascript
-const viewer = OpenSeadragon({
-    id: 'viewer',
-    tileSources: {
-        Image: {
-            xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
-            Url: 'http://content.zoomhub.net/dzis/TDbz_files/',
-            Format: 'jpg',
-            Overlap: '1',
-            TileSize: '254',
-            ServerFormat: 'Default',
-            Size: {
-                Height: '4409',
-                Width: '7793'
-            }
-        }
+const tileSource = {
+    Image: {
+      xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+      Url: 'http://openseadragon.github.io/example-images/highsmith/highsmith_files/',
+      Format: 'jpg',
+      Overlap: '2',
+      TileSize: '256',
+      Size: {
+        Height: '9221',
+        Width: '7026',
+      }
     }
+  };
+
+const viewer = new OpenSeadragon({
+	collectionMode: true,
+	collectionRows: 2,
+	tileSources: [
+	{ tileSource: tileSource },
+	{ tileSource: tileSource },
+	{ tileSource: tileSource },
+	{ tileSource: tileSource }]
 });
 
-const overlay = OpenSeadragon.CanvasOverlayHd(viewer, {
-    onRedraw:function(options) {
-      	let context = options.context;
-        context.fillStyle = "red";
-        context.fillRect(0, 0, 500, 500);            
-    },
-    clearBeforeRedraw:true
+const colors = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c'];
+const overlay = new OpenSeadragon.CanvasOverlayHd(viewer, {
+	onRedraw: function (opts) {
+		const context = opts.context;
+		context.fillStyle = colors[opts.index];
+		context.beginPath();
+		context.arc(150, 150, 150, 0, Math.PI * 2, true);
+		context.fill();
+	}
 });
  ```  
 
