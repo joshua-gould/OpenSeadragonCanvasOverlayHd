@@ -1,5 +1,5 @@
 {
-  "name": "OpenSeadragonCanvasOverlayHd",
+  "name": "openseadragon-canvasoverlay-hd",
   "version": "1.0.0",
   "description": "An OpenSeadragon plugin that adds canvas overlay capability and support multi-images.",
   "author": "Joshua Gould",
