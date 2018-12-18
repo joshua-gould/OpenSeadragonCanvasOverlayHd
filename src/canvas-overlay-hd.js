@@ -27,6 +27,39 @@ class CanvasOverlayHd {
     });
   }
 
+  static getTileIndexFromPixel (viewer, webPoint) {
+    let viewportPos = viewer.viewport.pointFromPixel(webPoint);
+    for (let i = 0, count = viewer.world.getItemCount(); i < count; i++) {
+      let tiledImage = viewer.world.getItemAt(i);
+      // box = viewer.world.getItemAt(i).getBounds();
+      // if (viewportPos.x > box.x &&
+      //   viewportPos.y > box.y &&
+      //   viewportPos.x < box.x + box.width &&
+      //   viewportPos.y < box.y + box.height) {
+      //
+      // }
+      // tiledImage.lastDrawn.forEach(function (tile) {
+      //   if (tile.bounds.containsPoint(viewportPos)) {
+      //     console.log('lastDrawn', tile);
+      //   }
+      // });
+
+      let viewportPosRect = new OpenSeadragon.Rect(viewportPos.x, viewportPos.y, 0, 0);
+      let tileSourcePosRect = tiledImage._viewportToTiledImageRectangle(viewportPosRect);
+      let tileSourcePos = tileSourcePosRect.getTopLeft();
+      let source = tiledImage.source;
+      if (tileSourcePos.x >= 0 && tileSourcePos.x <= 1 && tileSourcePos.y >= 0 &&
+        tileSourcePos.y <= 1 / source.aspectRatio) {
+        return i;
+        // for (let level = source.minLevel; level <= source.maxLevel; level++) {
+        //   let tilePoint = source.getTileAtPoint(level, tileSourcePos);
+        //   return i;
+        // }
+      }
+    }
+    return -1;
+  }
+
   canvas () {
     return this._canvas;
   }
@@ -74,8 +107,8 @@ class CanvasOverlayHd {
       let image = this._viewer.world.getItemAt(i);
       if (image) {
         let zoom = image.viewportToImageZoom(viewportZoom);
-        var vp = image.imageToViewportCoordinates(0, 0, true);
-        var p = this._viewer.viewport.pixelFromPoint(vp, true);
+        let vp = image.imageToViewportCoordinates(0, 0, true);
+        let p = this._viewer.viewport.pixelFromPoint(vp, true);
         context.scale(this.backingScale, this.backingScale);
         context.translate(p.x, p.y);
         context.scale(zoom, zoom);

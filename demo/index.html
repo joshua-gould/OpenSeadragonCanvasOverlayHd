@@ -42,37 +42,8 @@
       { tileSource: tileSource },
       { tileSource: tileSource }],
   });
+
   var overlayCoordinates = { x: 150, y: 150, radius: 175 };
-  viewer.innerTracker.moveHandler = function (event) {
-    var webPoint = event.position;
-    var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
-    var overlayIndex = -1;
-    for (let i = 0, count = viewer.world.getItemCount(); i < count; i++) {
-      let image = viewer.world.getItemAt(i);
-      if (image) {
-        var p = image.viewportToImageCoordinates(viewportPoint, true);
-        if (p.x >= overlayCoordinates.x - overlayCoordinates.radius && p.x <= overlayCoordinates.x +
-          overlayCoordinates.radius && p.y >= overlayCoordinates.y - overlayCoordinates.radius && p.y <=
-          overlayCoordinates.y + overlayCoordinates.radius) {
-          overlayIndex = i;
-          break;
-        }
-      }
-    }
-    if (overlayIndex === -1) {
-      viewer.canvas.title = '';
-      viewer.canvas.style.cursor = 'default';
-    } else {
-      viewer.canvas.title = 'Overlay ' + (overlayIndex + 1);
-      viewer.canvas.style.cursor = 'pointer';
-    }
-  };
-
-  viewer.addHandler('canvas-exit', function (event) {
-    viewer.canvas.title = '';
-    viewer.canvas.style.cursor = 'default';
-  });
-
   var colors = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6'];
   var overlay = new OpenSeadragon.CanvasOverlayHd(viewer, {
     onRedraw: function (opts) {
@@ -82,6 +53,31 @@
       context.arc(overlayCoordinates.x, overlayCoordinates.y, overlayCoordinates.radius, 0, Math.PI * 2, true);
       context.fill();
     },
+  });
+
+  viewer.innerTracker.moveHandler = function (event) {
+    var tileIndex = OpenSeadragon.CanvasOverlayHd.getTileIndexFromPixel(viewer, event.position);
+    var overCircle = false;
+    if (tileIndex === -1) {
+      viewer.canvas.title = '';
+      viewer.canvas.style.cursor = 'default';
+    } else {
+      var tile = viewer.world.getItemAt(tileIndex);
+      let viewportPos = viewer.viewport.pointFromPixel(event.position);
+      var p = tile.viewportToImageCoordinates(viewportPos, true);
+      if (p.x >= overlayCoordinates.x - overlayCoordinates.radius && p.x <= overlayCoordinates.x +
+        overlayCoordinates.radius && p.y >= overlayCoordinates.y - overlayCoordinates.radius && p.y <=
+        overlayCoordinates.y + overlayCoordinates.radius) {
+        overCircle = true;
+      }
+      viewer.canvas.title = 'Tile ' + (tileIndex + 1);
+      viewer.canvas.style.cursor = overCircle ? 'pointer' : 'default';
+    }
+  };
+
+  viewer.addHandler('canvas-exit', function (event) {
+    viewer.canvas.title = '';
+    viewer.canvas.style.cursor = 'default';
   });
 
   document.getElementById('add-image').addEventListener('click', function () {
