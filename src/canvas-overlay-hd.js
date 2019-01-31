@@ -76,9 +76,7 @@ class CanvasOverlayHd {
   resize () {
     let backingScale = 1;
     if (typeof window !== 'undefined' && 'devicePixelRatio' in window) {
-      if (window.devicePixelRatio > 1) {
-        backingScale = window.devicePixelRatio;
-      }
+      backingScale = window.devicePixelRatio;
     }
     let backingScaleUpdated = this.backingScale !== backingScale;
     this.backingScale = backingScale;
