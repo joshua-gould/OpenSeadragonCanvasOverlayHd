@@ -11,83 +11,83 @@
     <button id="remove-image">Remove Image</button>
 </div>
 <div id="openseadragon" style="width:100%;height:600px;"></div>
-<script src="https://cdn.jsdelivr.net/npm/openseadragon@2.4/build/openseadragon/openseadragon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/openseadragon@2.4.2/build/openseadragon/openseadragon.min.js"></script>
 <script src="../dist/openseadragon-canvas-overlay-hd.js"></script>
 <script>
 
-  var tileSource = {
-    Image: {
-      xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
-      Url: 'http://openseadragon.github.io/example-images/highsmith/highsmith_files/',
-      Format: 'jpg',
-      Overlap: '2',
-      TileSize: '256',
-      Size: {
-        Height: '9221',
-        Width: '7026',
-      },
-    },
-  };
+    var tileSource = {
+        Image: {
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+            Url: 'http://openseadragon.github.io/example-images/highsmith/highsmith_files/',
+            Format: 'jpg',
+            Overlap: '2',
+            TileSize: '256',
+            Size: {
+                Height: '9221',
+                Width: '7026'
+            }
+        }
+    };
 
-  var viewer = new OpenSeadragon({
-    id: 'openseadragon',
-    prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@2.4/build/openseadragon/images/',
-    autoResize: false,
-    showFullPageControl: false,
-    collectionMode: true,
-    collectionRows: 2,
-    tileSources: [
-      { tileSource: tileSource },
-      { tileSource: tileSource },
-      { tileSource: tileSource },
-      { tileSource: tileSource }],
-  });
+    var viewer = new OpenSeadragon({
+        id: 'openseadragon',
+        prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@2.4.2/build/openseadragon/images/',
+        autoResize: false,
+        showFullPageControl: false,
+        collectionMode: true,
+        collectionRows: 2,
+        tileSources: [
+            {tileSource: tileSource},
+            {tileSource: tileSource},
+            {tileSource: tileSource},
+            {tileSource: tileSource}]
+    });
 
-  var overlayCoordinates = { x: 150, y: 150, radius: 175 };
-  var colors = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6'];
-  var overlay = new OpenSeadragon.CanvasOverlayHd(viewer, {
-    onRedraw: function (opts) {
-      var context = opts.context;
-      context.fillStyle = colors[opts.index % colors.length];
-      context.beginPath();
-      context.arc(overlayCoordinates.x, overlayCoordinates.y, overlayCoordinates.radius, 0, Math.PI * 2, true);
-      context.fill();
-    },
-  });
+    var overlayCoordinates = {x: 150, y: 150, radius: 175};
+    var colors = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6'];
+    var overlay = new OpenSeadragon.CanvasOverlayHd(viewer, {
+        onRedraw: function (opts) {
+            var context = opts.context;
+            context.fillStyle = colors[opts.index % colors.length];
+            context.beginPath();
+            context.arc(overlayCoordinates.x, overlayCoordinates.y, overlayCoordinates.radius, 0, Math.PI * 2, true);
+            context.fill();
+        }
+    });
 
-  viewer.innerTracker.moveHandler = function (event) {
-    var tileIndex = OpenSeadragon.CanvasOverlayHd.getTileIndexFromPixel(viewer, event.position);
-    var overCircle = false;
-    if (tileIndex === -1) {
-      viewer.canvas.title = '';
-      viewer.canvas.style.cursor = 'default';
-    } else {
-      var tile = viewer.world.getItemAt(tileIndex);
-      let viewportPos = viewer.viewport.pointFromPixel(event.position);
-      var p = tile.viewportToImageCoordinates(viewportPos, true);
-      if (p.x >= overlayCoordinates.x - overlayCoordinates.radius && p.x <= overlayCoordinates.x +
-        overlayCoordinates.radius && p.y >= overlayCoordinates.y - overlayCoordinates.radius && p.y <=
-        overlayCoordinates.y + overlayCoordinates.radius) {
-        overCircle = true;
-      }
-      viewer.canvas.title = 'Tile ' + (tileIndex + 1);
-      viewer.canvas.style.cursor = overCircle ? 'pointer' : 'default';
-    }
-  };
+    viewer.innerTracker.moveHandler = function (event) {
+        var tileIndex = OpenSeadragon.CanvasOverlayHd.getTileIndexFromPixel(viewer, event.position);
+        var overCircle = false;
+        if (tileIndex === -1) {
+            viewer.canvas.title = '';
+            viewer.canvas.style.cursor = 'default';
+        } else {
+            var tile = viewer.world.getItemAt(tileIndex);
+            let viewportPos = viewer.viewport.pointFromPixel(event.position);
+            var p = tile.viewportToImageCoordinates(viewportPos, true);
+            if (p.x >= overlayCoordinates.x - overlayCoordinates.radius && p.x <= overlayCoordinates.x +
+                overlayCoordinates.radius && p.y >= overlayCoordinates.y - overlayCoordinates.radius && p.y <=
+                overlayCoordinates.y + overlayCoordinates.radius) {
+                overCircle = true;
+            }
+            viewer.canvas.title = 'Tile ' + (tileIndex + 1);
+            viewer.canvas.style.cursor = overCircle ? 'pointer' : 'default';
+        }
+    };
 
-  viewer.addHandler('canvas-exit', function (event) {
-    viewer.canvas.title = '';
-    viewer.canvas.style.cursor = 'default';
-  });
+    viewer.addHandler('canvas-exit', function (event) {
+        viewer.canvas.title = '';
+        viewer.canvas.style.cursor = 'default';
+    });
 
-  document.getElementById('add-image').addEventListener('click', function () {
-    viewer.addTiledImage({ tileSource: tileSource });
-  });
-  document.getElementById('remove-image').addEventListener('click', function () {
-    if (viewer.world.getItemCount() > 0) {
-      viewer.world.removeItem(viewer.world.getItemAt(viewer.world.getItemCount() - 1));
-    }
-  });
+    document.getElementById('add-image').addEventListener('click', function () {
+        viewer.addTiledImage({tileSource: tileSource});
+    });
+    document.getElementById('remove-image').addEventListener('click', function () {
+        if (viewer.world.getItemCount() > 0) {
+            viewer.world.removeItem(viewer.world.getItemAt(viewer.world.getItemCount() - 1));
+        }
+    });
 
 </script>
 
